@@ -11,12 +11,7 @@ export default function Home() {
 
   const { data: sessionData } = useSession();
   const { data: formData }  = api.form.getAllForms.useQuery()
-
-  React.useEffect(() => {
-    console.log(formData)
-  } 
-  , [formData]);
-
+  
 
   return (
     <>

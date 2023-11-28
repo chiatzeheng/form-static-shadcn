@@ -53,7 +53,8 @@ export const formRouter = createTRPCRouter({
       description: z.string(),
     })
   ).mutation(async ({ ctx, input }) => {
-    await ctx.db.formItemResponse.update({
+    console.log(input)
+    await ctx.db.formAnswer.update({
       where: { id: input.id },
       data: {
         username: input.username,

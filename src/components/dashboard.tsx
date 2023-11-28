@@ -12,6 +12,8 @@ import AddCard from "@/components/addcard"
 import { api } from "@/utils/api";
 import toast from "react-hot-toast";
 import type { FormData as Form } from "@/types/types";
+import type { FinishedCard } from "@/types/types";
+import { useRouter } from "next/router";
 
 
 export default function Dashboard({ data }: { data: Form[] }) {
@@ -38,15 +40,12 @@ export default function Dashboard({ data }: { data: Form[] }) {
 
 
 
-type FinishedCard = {
-  formId: string;
-  formName: string;
-  formDescription: string;
-}
 
-function FinishedCard({ formId, formName, formDescription }: FinishedCard) {
+
+function FinishedCard({ formId, formName,  formDescription, answerId }: FinishedCard) {
   const deleteForm = api.form.deleteForm.useMutation();
   const [loading, setLoading] = React.useState(false);
+  const utils = api.useUtils()
 
   const handleDelete = () => {
     try {
@@ -56,6 +55,7 @@ function FinishedCard({ formId, formName, formDescription }: FinishedCard) {
         {
           onSuccess: () => {
             toast.success("Form Deleted!");
+            void utils.form.getAllForms.refetch()
           },
           onError: (e) => {
             toast.error(e.message);
@@ -71,7 +71,7 @@ function FinishedCard({ formId, formName, formDescription }: FinishedCard) {
 
   return (
     <Card className="h-80 cursor-pointer transition duration-300 hover:bg-gray-100">
-      <Link href={`/forms/${formId}`} passHref>
+      <Link href={`/forms/${answerId}`} passHref>
         <CardHeader>
           <CardTitle>{formName} </CardTitle>
           <CardDescription>{formDescription}</CardDescription>

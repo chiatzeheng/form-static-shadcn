@@ -10,6 +10,8 @@ import {
 } from "../components/ui/card";
 import type { FormSubmission } from "@/types/types";
 import { api } from "@/utils/api";
+import { toast } from  "react-hot-toast"
+import { useRouter } from "next/router"
 
 
 // Define your form schema using zod
@@ -60,17 +62,26 @@ const formSchema = z.object({
 });
 
 export default function FormDisplay() {
-  const submitAnswers = api.form.submitAnswers.useMutation();
 
-  const handleOnSubmit = async ( data: FormSubmission) =>  {
+ 
+  const submitAnswers = api.form.submitAnswer.useMutation();
+  const router = useRouter()
+
+
+  const handleOnSubmit = async (data: FormSubmission) =>  {
+
+    const newid =  router.query.id
+    const newdata = {id: newid, ...data}
+    console.log(newdata)
+
      try {
-       await submitAnswers.mutateAsync(data),
+       await submitAnswers.mutateAsync(newdata),
           {
             onSuccess: () => {
-              console.log("success");
+              toast.success("success");
             },
             onError: (error) => {
-              console.log(error);
+              toast.error(error);
             },
           }
     } catch (error) {
@@ -93,7 +104,8 @@ export default function FormDisplay() {
     <AutoForm
       // Pass the schema to the form
       formSchema={formSchema}
-      onSubmit={() => handleOnSubmit}
+      onSubmit={handleOnSubmit}
+      
     
       fieldConfig={{
         password: {

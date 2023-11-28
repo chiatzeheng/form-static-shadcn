@@ -30,4 +30,5 @@ export type FinishedCard = {
   formId: string;
   formName: string;
   formDescription: string;
+  answerId: string;
 }
