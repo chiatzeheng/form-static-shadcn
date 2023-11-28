@@ -10,7 +10,6 @@ import {
 } from "../components/ui/card";
 import type { FormSubmission } from "@/types/types";
 import { api } from "@/utils/api";
-import { useRouter } from "next/router";
 
 
 // Define your form schema using zod
@@ -61,12 +60,11 @@ const formSchema = z.object({
 });
 
 export default function FormDisplay() {
+  const submitAnswers = api.form.submitAnswers.useMutation();
 
-  const { mutate: submitForms } = api.form.submitForm.useMutation();
-
-  function handleOnSubmit ( data: FormSubmission)  {
+  const handleOnSubmit = async ( data: FormSubmission) =>  {
      try {
-        submitForms(data),
+       await submitAnswers.mutateAsync(data),
           {
             onSuccess: () => {
               console.log("success");
@@ -95,7 +93,7 @@ export default function FormDisplay() {
     <AutoForm
       // Pass the schema to the form
       formSchema={formSchema}
-      onSubmit={handleOnSubmit}
+      onSubmit={() => handleOnSubmit}
     
       fieldConfig={{
         password: {

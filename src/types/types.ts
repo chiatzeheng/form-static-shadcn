@@ -8,16 +8,16 @@ export type SessionData = {
   expires: string;
 };
 
-export type Form = {
-  id: number;
+export type FormData = {
+  id: string;
   name: string;
-  createdBy: {
-    id: string;
-  };
+  description: string;
+  answerId: number;
 };
 
 
 export type FormSubmission = {
+  id: string;
   username: string;
   password: string;
   acceptTerms: boolean;
@@ -25,3 +25,9 @@ export type FormSubmission = {
   description: string;
 };
 
+
+export type FinishedCard = {
+  formId: string;
+  formName: string;
+  formDescription: string;
+}

@@ -1,13 +1,22 @@
 /* eslint-disable react/no-unescaped-entities */
-import { signIn, signOut, useSession,  } from "next-auth/react";
+import { signIn, useSession,  } from "next-auth/react";
 import Head from "next/head";
-import Navbar from "@/components/navbar";
 import Dashboard from "@/components/dashboard";
-import type { SessionData } from "@/types/types";  
+import { api } from "@/utils/api";
+import React from "react";
+import type { FormData } from "@/types/types";
+import Navbar from "@/components/navbar";
 
 export default function Home() {
 
-  const { data: sessionData }  = useSession();
+  const { data: sessionData } = useSession();
+  const { data: formData }  = api.form.getAllForms.useQuery()
+
+  React.useEffect(() => {
+    console.log(formData)
+  } 
+  , [formData]);
+
 
   return (
     <>
@@ -16,7 +25,10 @@ export default function Home() {
       </Head>
 
       {sessionData ? (
-        <AuthenticatedContent sessionData={sessionData} />
+        <>
+        <Navbar user={sessionData.user} />
+        <AuthenticatedContent data={formData}/>
+        </>
       ) : ( 
         <LoginPrompt />
       )}
@@ -24,14 +36,12 @@ export default function Home() {
   );
 }
 
-function AuthenticatedContent({ sessionData }: { sessionData: SessionData}) {
+function AuthenticatedContent({data} : {data: FormData[]}) {
 
-  const user = sessionData.user;
   return (
     <>
-      <div className="flex relative">
-        <Navbar user={user}/>
-        <Dashboard />
+      <div className="flex relative items-center">
+        <Dashboard data={data} />
       </div>
     </>
   );
@@ -52,12 +62,6 @@ function LoginPrompt() {
           onClick={() => void signIn()}
         >
           Sign in
-        </button>
-        <button
-          className="bg-grladient-to-r w-full rounded-full from-blue-500 via-blue-600 to-blue-700 py-3 font-semibold text-white transition hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 dark:text-gray-800"
-          onClick={() => void signOut()}
-        >
-          Sign out
         </button>
       </div>
     </div>
